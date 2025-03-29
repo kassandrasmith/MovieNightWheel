@@ -15,7 +15,7 @@ def create_wheel(canvas, slices, weights, rotation_angle=0):
     angle_per_weight = 360 / total_weight  # Angle per weight unit
     start_angle = rotation_angle  # Set the start angle based on rotation_angle
 
-    slice_colors = ['#EE7EA0','#FF9797','#D20000', '#FD5E00', '#FFA07A', '#FFCC80','#EEB649','#F7CE15','#BCC07B','#C1DB9E','#669E63','#007D75','#ADD2CA','#D5EDf8','#ABCDDE','#B5BEF5','#CDBDEB','#F6E7FF']
+    slice_colors = ['#EE7EA0', '#FF9797', '#D20000', '#FD5E00', '#FFA07A', '#FFCC80', '#EEB649', '#F7CE15', '#BCC07B', '#C1DB9E', '#669E63', '#007D75', '#ADD2CA', '#D5EDf8', '#ABCDDE', '#B5BEF5', '#CDBDEB', '#F6E7FF']
 
     color_count = len(slice_colors)  # Number of colors available
 
@@ -40,20 +40,20 @@ def create_wheel(canvas, slices, weights, rotation_angle=0):
         start_unit_circle = start_angle % 360
         end_unit_circle = end_angle % 360
 
-
         # Calculate label position based on the mid-angle
-        label_y = 250+ 125 * math.cos(math.radians(mid_angle+90))
-        label_x = 250+ 125 * math.sin(math.radians(mid_angle+90))
+        label_y = 250 + 125 * math.cos(math.radians(mid_angle + 90))
+        label_x = 250 + 125 * math.sin(math.radians(mid_angle + 90))
 
         # Draw the label at the correct position
-        canvas.create_text(label_x, label_y, text=f'{slices[i]+" "+str(weights[i])}', font=('Arial', 5, 'bold'))
+        canvas.create_text(label_x, label_y, text=f'{slices[i] + " " + str(weights[i])}', font=('Arial', 5, 'bold'))
         start_angle = end_angle
-        if (start_unit_circle > 220) and (end_unit_circle < 90) :
+        if (start_unit_circle > 220) and (end_unit_circle < 90):
             winner = slices[i]
 
     # Draw the stationary marker at the center of the wheel (0,0 position)
     canvas.create_line(480, 250, 500, 250, fill='black', width=2, arrow='first')
     return winner
+
 
 def increment_weights(arr):
     for i in range(len(arr)):
@@ -64,7 +64,10 @@ def increment_weights(arr):
 def write_new_movie_list(slices, weights):
     with open("movies", "w") as file:
         for i in range(len(slices)):
-            file.write(slices[i] + ',' + str(weights[i]) + "\n")
+            if weights[i] < 9:
+                file.write(slices[i] + ',' + "1" + "\n")
+            else:
+                file.write(slices[i] + ',' + str(weights[i]) + "\n")
 
 
 # Function to spin the wheel
@@ -96,7 +99,7 @@ def on_spin_button_click(canvas, slices, weights):
 
 def on_add_button_click(canvas, slices, weights):
     new_movie = entry.get()
-    #print("Input:", new_movie)
+    # print("Input:", new_movie)
     slices.append(new_movie)
     weights = increment_weights(weights)
     weights.append(10)
@@ -142,9 +145,6 @@ spin_button.pack()
 # Create an Entry widget
 entry = tk.Entry(root, width=30)
 entry.pack()
-# Create a button to trigger the function
-button = tk.Button(root, text="Get Text", command=get_text)
-button.pack()
 
 add_button = tk.Button(root, text="Add Movie", command=lambda: on_add_button_click(canvas, slices, weights))  # lambda?? switch for permanent call to update existing canvas
 add_button.pack()
