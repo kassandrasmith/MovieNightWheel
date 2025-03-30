@@ -45,7 +45,7 @@ def create_wheel(canvas, slices, weights, rotation_angle=0):
         label_x = 250 + 125 * math.sin(math.radians(mid_angle + 90))
 
         # Draw the label at the correct position
-        canvas.create_text(label_x, label_y, text=f'{slices[i] + " " + str(weights[i])}', font=('Arial', 5, 'bold'))
+        canvas.create_text(label_x, label_y, text=f'{slices[i] + " " + str(weights[i])}', fill='#000042', font=('Roboto', 10, 'normal'), angle=mid_angle)
         start_angle = end_angle
         if (start_unit_circle > 220) and (end_unit_circle < 90):
             winner = slices[i]
@@ -87,7 +87,8 @@ def spin_wheel(canvas, slices, weights):
             canvas.after(rotation_duration // frame_count, animate_spin, frame + 1)
         elif frame == frame_count:
             final_angle = (spin_angle - 360) % 360  # Final angle after the full spin
-            canvas.create_text(200, 450, text=winner, font=('Arial', 14, 'bold'))
+            canvas.create_rectangle(500, 500 , 0, 460, fill= '#bfd7ed')
+            canvas.create_text(250, 480, text=winner, font=('Roboto', 14, 'bold'), fill='#000042', activefill='#0074b7')
 
     animate_spin(0)  # Start the animation from frame 0
 
@@ -99,7 +100,6 @@ def on_spin_button_click(canvas, slices, weights):
 
 def on_add_button_click(canvas, slices, weights):
     new_movie = entry.get()
-    # print("Input:", new_movie)
     slices.append(new_movie)
     weights = increment_weights(weights)
     weights.append(10)
@@ -130,7 +130,7 @@ root = tk.Tk()
 root.title("Spinning Wheel")
 
 # Create a canvas widget
-canvas = tk.Canvas(root, width=500, height=500, bg='white')
+canvas = tk.Canvas(root, width=500, height=500)
 canvas.pack()
 
 slices, weights = get_slices()
