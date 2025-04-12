@@ -10,25 +10,19 @@ import random
 def create_wheel(canvas, slices, weights, rotation_angle=0):
     canvas.delete("all")  # Clear canvas
     winner = ""
-
     total_weight = sum(weights)  # Total weight to normalize the slices
     angle_per_weight = 360 / total_weight  # Angle per weight unit
     start_angle = rotation_angle  # Set the start angle based on rotation_angle
 
     slice_colors = ['#EE7EA0', '#FF9797', '#D20000', '#FD5E00', '#FFA07A', '#FFCC80', '#EEB649', '#F7CE15', '#BCC07B', '#C1DB9E', '#669E63', '#007D75', '#ADD2CA', '#D5EDf8', '#ABCDDE', '#B5BEF5', '#CDBDEB', '#F6E7FF']
-
     color_count = len(slice_colors)  # Number of colors available
 
-    # Draw each slice
+
     for i, weight in enumerate(weights):
-        # Calculate the angle for this slice
-        end_angle = start_angle + (weight * angle_per_weight)
-
-        # Use modulo to cycle through the colors if more than 6 slices
-        fill_color = slice_colors[i % color_count - 1]
-
+        end_angle = start_angle + (weight * angle_per_weight)    #calculate the angle for this slice
+        fill_color = slice_colors[i % color_count - 1] #cycle through the colors
         # Draw each slice as a wedge (arc)
-        canvas.create_arc(0, 500, 500, 0, start=start_angle, extent=(end_angle - start_angle), fill=fill_color, outline='black', width=2)
+        canvas.create_arc(0, 500, 500, 0, start=start_angle, extent=(end_angle - start_angle), fill=fill_color, outline=fill_color, width=2)
         start_angle = end_angle  # Update the start angle for the next slice
 
     # Create labels that move with the slices
@@ -51,18 +45,20 @@ def create_wheel(canvas, slices, weights, rotation_angle=0):
             winner = slices[i]
 
     # Draw the stationary marker at the center of the wheel (0,0 position)
-    canvas.create_line(480, 250, 500, 250, fill='black', width=2, arrow='first')
+    canvas.create_line(500, 250, 480, 250, fill='black', width=2, arrow='last')
+    #canvas.create_oval(240, 240, 260, 260, fill='#EE7EA0')
     return winner
 
 
 def increment_weights(arr):
     for i in range(len(arr)):
-        arr[i] += 1
+        if arr[i] > 5:
+            arr[i] += 1
     return arr
 
 
 def write_new_movie_list(slices, weights):
-    with open("movies", "w") as file:
+    with open("movies.pwif", "w") as file:
         for i in range(len(slices)):
             if weights[i] < 9:
                 file.write(slices[i] + ',' + "1" + "\n")
@@ -87,7 +83,7 @@ def spin_wheel(canvas, slices, weights):
             canvas.after(rotation_duration // frame_count, animate_spin, frame + 1)
         elif frame == frame_count:
             final_angle = (spin_angle - 360) % 360  # Final angle after the full spin
-            canvas.create_rectangle(500, 500 , 0, 460, fill= '#bfd7ed')
+            canvas.create_rectangle(500, 500, 0, 460, fill='#bfd7ed')
             canvas.create_text(250, 480, text=winner, font=('Roboto', 14, 'bold'), fill='#000042', activefill='#0074b7')
 
     animate_spin(0)  # Start the animation from frame 0
@@ -110,7 +106,7 @@ def on_add_button_click(canvas, slices, weights):
 def get_slices():
     movies = []
     weights = []
-    with open("movies", "r") as file:
+    with open("movies.pwif", "r") as file:
         for line in file:
             movie, weight = line.split(',')
             movies.append(movie)
@@ -137,6 +133,7 @@ slices, weights = get_slices()
 
 # Draw the wheel initially
 create_wheel(canvas, slices, weights)
+#canvas.create_oval(220, 220, 280, 280, fill='#bfd7ed')
 
 # Add a Spin button
 spin_button = tk.Button(root, text="Spin Wheel", command=lambda: on_spin_button_click(canvas, slices, weights))
@@ -146,7 +143,7 @@ spin_button.pack()
 entry = tk.Entry(root, width=30)
 entry.pack()
 
-add_button = tk.Button(root, text="Add Movie", command=lambda: on_add_button_click(canvas, slices, weights))  # lambda?? switch for permanent call to update existing canvas
+add_button = tk.Button(root, text="Add Movie", command=lambda: on_add_button_click(canvas, slices, weights))
 add_button.pack()
 
 # Run the application
