@@ -58,7 +58,7 @@ def increment_weights(arr):
 
 
 def write_new_movie_list(slices, weights):
-    with open("movies.pwif", "w") as file:
+    with open("Wheels/BookWheel", "w") as file:
         for i in range(len(slices)):
             if weights[i] < 9:
                 file.write(slices[i] + ',' + "1" + "\n")
@@ -106,7 +106,7 @@ def on_add_button_click(canvas, slices, weights):
 def get_slices():
     movies = []
     weights = []
-    with open("movies.pwif", "r") as file:
+    with open("Wheels/BookWheel", "r") as file:
         for line in file:
             movie, weight = line.split(',')
             movies.append(movie)
